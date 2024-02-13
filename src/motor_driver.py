@@ -65,21 +65,29 @@ class MotorDriver:
  
 # This main code is run if this file is the main program but won't run if this
 # file is imported as a module by some other main program       
-if __name__ == "__main__":
-    # set up timer 3
+if __name__ == "__main__": # set up timer 3
     TIM3 = pyb.Timer(3, freq=2000) # Timer 3, frequency 2000Hz
+    TIM5 = pyb.Timer(5, freq=2000) # Timer 5, frequency 2000Hz
     # Define pin assignments for motor 1
     ENA = pyb.Pin(pyb.Pin.board.PA10, pyb.Pin.OUT_PP)
     IN1A = pyb.Pin(pyb.Pin.board.PB4)
     IN2A = pyb.Pin(pyb.Pin.board.PB5)
+    # Define pin assignments for motor 2
+    ENB = pyb.Pin(pyb.Pin.board.PC1, pyb.Pin.OUT_PP)
+    IN1B = pyb.Pin(pyb.Pin.board.PA0)
+    IN2B = pyb.Pin(pyb.Pin.board.PA1)
     
     
     # Create motor drivers
     moe = MotorDriver(ENA, IN1A, IN2A, TIM3)
+    eenie = MotorDriver(ENB, IN1B, IN2B, TIM5)
     while True:
         moe.set_duty_cycle (50)				#Forward at 50% duty cycle
+        eenie.set_duty_cycle (-50)	
         time.sleep(2)						#Sleeps for 2 seconds
         moe.set_duty_cycle (-50)			#Reverse at 50% duty cycle
+        eenie.set_duty_cycle (50)	
         time.sleep(2)						#Sleeps for 2 seconds
         moe.set_duty_cycle (0)				#Stops the duty cycle
+        eenie.set_duty_cycle (0)	
         time.sleep(2)						#Sleeps for 2 seconds

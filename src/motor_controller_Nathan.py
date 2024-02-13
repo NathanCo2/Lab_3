@@ -3,7 +3,7 @@
 
 This program demonstrates the development of a class called MotorController to that
 perform closed-loop proportional control. This code was tested an ranwith the Motor
-Driver class and Encoder clas developed in Lab 1 to examine if the code was running
+Driver class and Encoder class developed in Lab 1 to examine if the code was running
 correctly. 
 
 @author Jessica Perez, Jacquelyn Banh, and Nathan Chapman
@@ -25,6 +25,8 @@ class MotorController:
         the position of a motor
         @param gain = Kp, percent duty cycle/encoder count
         @param setpoint = desired angle of motor
+        @param setdutycycle_f = function to set duty cycle output
+        @param getactual_f = function to read actual value
         """
         self.setpoint = setpoint
         self.gain = gain
@@ -37,22 +39,23 @@ class MotorController:
         """!
         This method will run one pass of the control algorithm
         """
-        # error calcs (PWN = e_setpoint - e_actual)
         self.actual = self.getactual()
         self.err = self.setpoint - self.actual
-        self.PWM = self.err*self.gain
+        self.PWM = int(self.err*self.gain)
         self.setdutycycle(self.PWM)
-        
+        return self.PWM # return actuation value
     
     def set_setpoint(self,setpoint):
         """!
         This method sets up the setpoint for proportional control
+        @param setpoint = desired angle of motor
         """
         self.setpoint = setpoint
         
     def set_Kp(self,gain):
         """!
         This method sets up the gain for proportional control
+        @param gain = Kp, percent duty cycle/encoder count
         """
         self.gain = gain
         

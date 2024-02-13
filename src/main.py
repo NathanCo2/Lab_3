@@ -1,7 +1,7 @@
 # from matplotlib import pyplot
 from motor_driver import MotorDriver
 from encoder_reader import Encoder
-from motor_controller import MotorController
+from motor_controller_Nathan import MotorController
 import utime
 
 # set up timer 8 for encoder 2
@@ -22,16 +22,13 @@ pina1 = pyb.Pin(pyb.Pin.board.PA1)
 Tom = MotorDriver(pinc1, pina0, pina1, TIM5)
 
 # setup motor controller
-kP = 1
-setpoint = 1
+kP = 0.0195
+setpoint = 10000
 Deitch = MotorController(kP, setpoint, Tom.set_duty_cycle, Jerry.read)
     
-    
 while True:
-    moe.set_duty_cycle (-50)#Reverse at 50% duty cycle
-    #read encoder 20times for 20 seconds
-    utime.sleep_ms(10)
-    Tom.read()
+    Deitch.run()
+    utime.sleep_ms(100)
 
 
 
