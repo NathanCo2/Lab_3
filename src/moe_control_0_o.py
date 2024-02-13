@@ -29,24 +29,30 @@ class MotorController:
         @param ch2pin: Pin for reading encoder channel 2
         @param timer: Timer object for reading encoder
         """
+        self.setpoint = 0
+        self.actual = 0
+        self.gain = 0
+        self.PWM = 0
     
     def run(self):
         """!
         This method will repeatedly run the controll algorithm
         """
+        # error calcs (PWN = e_setpoint - e_actual)
+        self.PWM = gain(self.setpoint - self.actual)
     
-    
-    def set_setpoint(self):
+    def set_setpoint(self,setpoint):
         """!
         This method sets up the setpoint for proportional control
         """
-
+        self.setpoint = setpoint
         
-    def set_Kp(self):
+    def set_Kp(self,gain):
         """!
         This method sets up the gain for proportional control
         """
-    
+        self.gain = gain
+        
     def controller_response(self):
         """!
         This method will print the results obtained of the step
