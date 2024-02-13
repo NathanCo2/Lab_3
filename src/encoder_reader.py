@@ -42,7 +42,7 @@ class Encoder:
         This method returns the current position of the
         motor using the encoder
         """
-        print("Counter = ", self.timer.counter()); # reads the current timer value
+        return self.time.counter()
         #Accounts from overflow and underflow
         self.current = self.timer.counter()# stores current time value
         self.delta = self.current - self.previous # calculates the delta based on current time and previous time
@@ -57,6 +57,7 @@ class Encoder:
         print("Delta Total = ", self.deltatot);# prints total delta
         self.previous = self.current # stores previous time into current for next read
         
+    
     def zero(self):
         """!
         This method sets the encoder count to zero at the

@@ -4,8 +4,6 @@ from encoder_reader import Encoder
 from motor_controller import MotorController
 import utime
 
-
-
 # set up timer 8 for encoder 2
 TIM8 = pyb.Timer(8, prescaler=1, period=0xFFFF) # Timer 8, no prescalar, frequency 100kHz
 #Define pin assignments for encoder 2
@@ -19,17 +17,22 @@ TIM5 = pyb.Timer(5, freq=2000) # Timer 5, frequency 2000Hz
 # Define pin assignments for motor 2
 pinc1 = pyb.Pin(pyb.Pin.board.PC1, pyb.Pin.OUT_PP)
 pina0= pyb.Pin(pyb.Pin.board.PA0)
-pina1 = pyb.Pin(pyb.Pin.board.PA1)
-    
+pina1 = pyb.Pin(pyb.Pin.board.PA1)    
 # Create motor driver
 Tom = MotorDriver(pinc1, pina0, pina1, TIM5)
+
+# setup motor controller
+kP = 1
+setpoint = 1
+Deitch = MotorController(kP, setpoint, Tom.set_duty_cycle, Jerry.read)
+    
+    
 while True:
     moe.set_duty_cycle (-50)#Reverse at 50% duty cycle
     #read encoder 20times for 20 seconds
-    time.sleep(0.01)
+    utime.sleep_ms(10)
     Tom.read()
 
-utime.sleep_ms(10)
 
 
 
