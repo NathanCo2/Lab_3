@@ -26,11 +26,11 @@ kP = 0.0195
 setpoint = 10000
 Deitch = MotorController(kP, setpoint, Tom.set_duty_cycle, Jerry.read)
     
-while True:
+for i in range(17):
     Deitch.run()
     utime.sleep_ms(100)
 
-
+Deitch.controller_response()
 
 
 
