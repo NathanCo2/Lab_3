@@ -77,9 +77,7 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
         plot_axes.set_xlabel(xlabel)
         plot_axes.set_ylabel(ylabel)
         plot_axes.grid(True)
-        
-
-                
+                 
     ser.close()
 
 def tk_matplot(plot_function, xlabel, ylabel, title):
