@@ -23,18 +23,21 @@ class MotorController:
 
     def __init__ (self, gain, setpoint, ch1pin, ch2pin, timer):
         """! 
-        Creates an encoder object that can be used to measure
-        the position of a motor
-        @param ch1pin: Pin for reading encoder channel 1
-        @param ch2pin: Pin for reading encoder channel 2
-        @param timer: Timer object for reading encoder
+        Creates an motor controller object that can be used to set 
+        the gain and setpoint of the motor
         """
-    
+        #print ("Creating an setpoint and gain")
+        self.gain = gain
+        self.setpoint = setpoint
+        self.actual = actual
+        self.error = error
+        
     def run(self):
         """!
         This method will repeatedly run the controll algorithm
         """
-    
+        #Calculating the error signal 
+        self.error = self.gain(self.setpoint - self.actual)
     
     def set_setpoint(self):
         """!
@@ -52,6 +55,7 @@ class MotorController:
         This method will print the results obtained of the step
         response and print when the step response is done running
         """  
+
 
 # This main code is run if this file is the main program but won't run if this
 # file is imported as a module by some other main program           
