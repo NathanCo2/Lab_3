@@ -21,7 +21,7 @@ class MotorController:
     This class implements the Motor Controller for an ME405 kit. 
     """
 
-    def __init__ (self, gain, setpoint, ch1pin, ch2pin, timer):
+    def __init__ (self, gain, setpoint, timer):
         """! 
         Creates an motor controller object that can be used to set 
         the gain and setpoint of the motor
@@ -31,25 +31,27 @@ class MotorController:
         self.setpoint = setpoint
         self.actual = actual
         self.error = error
+        self.timer = timer
         
     def run(self):
         """!
         This method will repeatedly run the controll algorithm
         """
-        #Calculating the error signal 
+        #Calculating the error signal (actuation signal)
         self.error = self.gain(self.setpoint - self.actual)
     
     def set_setpoint(self):
         """!
         This method sets up the setpoint for proportional control
         """
-
+        self.setpoint = 
         
     def set_Kp(self):
         """!
         This method sets up the gain for proportional control
         """
-    
+        self.gain =
+        
     def controller_response(self):
         """!
         This method will print the results obtained of the step
