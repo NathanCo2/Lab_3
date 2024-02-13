@@ -21,6 +21,12 @@ pina1 = pyb.Pin(pyb.Pin.board.PA1)
 # Create motor driver
 Tom = MotorDriver(pinc1, pina0, pina1, TIM5)
 
+# setup motor controller
+kP = 1
+setpoint = 1
+Deitch = MotorController(kP, setpoint, Tom.set_duty_cycle, Jerry.read)
+    
+    
 while True:
     moe.set_duty_cycle (-50)#Reverse at 50% duty cycle
     #read encoder 20times for 20 seconds
