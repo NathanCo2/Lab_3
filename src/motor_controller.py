@@ -22,24 +22,28 @@ class MotorController():
     This class implements the Motor Controller for an ME405 kit. 
     """
 
-    def __init__ (self, gain, setpoint, PWM_function, position_function):
+    def __init__ (self, gain, setpoint, setdutycycle_f, getactual_f):
         """! 
         Creates an motor controller object that can be used to set 
         the gain and setpoint of the motor
         """
-        #print ("Creating an setpoint and gain")
-        self.gain = gain
         self.setpoint = setpoint
-        self.actual = actual
-        self.error = error
+        self.gain = gain
+        self.actual = 0
+        self.err = 0
+        self.setdutycycle = setdutycycle_f
+        self.getactual = getactual_f
         
     def run(self):
         """!
         This method will repeatedly run the controll algorithm
         """
         #Calculating the error signal (actuation signal)
-        self.error = self.gain(self.setpoint - self.position_function())
-        
+        self.actual = self.getactual()
+        self.err = self.setpoint - self.actual
+        self.PWM = int(self.err*self.gain)
+        self.setdutycycle(self.PWM)
+        return self.PWM # return actuation value
         
     def set_setpoint(self, setpoint):
         """!
@@ -58,38 +62,54 @@ class MotorController():
         This method will print the results obtained of the step
         response and print when the step response is done running
         """
-        #opens the data file from folder and reads
-        with open('data.csv', 'r') as file: 
-            #store column headers for first row by characters  
-            header = file.readline(-1)
-            time = header[:8]
-            height = header[10:20]
-            #iterates through each line of data file 
-            for line in file:
+        with serial.Serial(port='COM5',baudrate=9600,timeout=1) as ser:
+            ser.write(b'\x03') 
+            ser.write(b'\x04')
+            
+            for line in ser:
                 try:
-                    #splits each line where comma is present
+                    line = line.decode('utf-8')
+                    #splits the string into two CSV
                     split = line.split(',')
-                    #Creates a list of the X-values (Time [s])
-                    x = split[0:1]#grabs first column
-                    join_x = ','.join(x)#combines 2 strings together
+                    #creates a list of the x-values (Time [s])
+                    x = split[0:1]
+                    join_x = ','.join(x)
                     xx = float(join_x)
-                    #Creates a list of the Y-values (Height [m])
+                    #creates a list of the y-values (Voltage [V])
                     y = split[1:2]
-                    join_y = ','.join(y) 
+                    join_y = ','.join(y)
                     yy = float(join_y)
-                    #stores the created list of variables in the blank arrays
+                    #stores the created list of variables in new arrays
                     xaxis_times.append(xx)
-                    yaxis_height.append(yy)
-                    #Creates points for plot
-                    #print(xaxis_times, yaxis_height)   
+                    yaxis_voltage.append(yy)
                 except ValueError:
-                    #error occurs when float runs
-                    print('Error: Not a integer')
+                    print('Error: :(')
                     pass
 
 # This main code is run if this file is the main program but won't run if this
 # file is imported as a module by some other main program           
 if __name__ == "__main__":
+    # set up timer 8 for encoder 2
+    TIM8 = pyb.Timer(8, prescaler=1, period=0xFFFF) # Timer 8, no prescalar, frequency 100kHz
+    #Define pin assignments for encoder 2
+    pinc6 = pyb.Pin(pyb.Pin.board.PC6)
+    pinc7 = pyb.Pin(pyb.Pin.board.PC7)
+    # Create encoder object
+    Jerry = Encoder(pinc6, pinc7, TIM8)
+
+    # setup motor
+    TIM5 = pyb.Timer(5, freq=2000) # Timer 5, frequency 2000Hz
+    # Define pin assignments for motor 2
+    pinc1 = pyb.Pin(pyb.Pin.board.PC1, pyb.Pin.OUT_PP)
+    pina0= pyb.Pin(pyb.Pin.board.PA0)
+    pina1 = pyb.Pin(pyb.Pin.board.PA1)    
+    # Create motor driver
+    Tom = MotorDriver(pinc1, pina0, pina1, TIM5)
+
+    # setup motor controller
+    kP = 1
+    setpoint = 1
+    Deitch = MotorController(kP, setpoint, Tom.set_duty_cycle, Jerry.read)
 
 
 
