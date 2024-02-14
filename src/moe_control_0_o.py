@@ -90,6 +90,7 @@ class MotorController:
                     #error occurs when float runs
                     print('Error: Not a integer')
                     pass
+                return (xaxis_times, yaxis_height)
          
 if __name__ == "__main__":
 
