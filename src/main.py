@@ -43,4 +43,5 @@ Deitch = MotorController(kP, setpoint, Tom.set_duty_cycle, Jerry.read)
 while True:
     Deitch.run()
     utime.sleep_ms(100)
-
+    
+Deitch.controller_response()

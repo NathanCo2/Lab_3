@@ -112,5 +112,3 @@ if __name__ == "__main__":
     Deitch = MotorController(kP, setpoint, Tom.set_duty_cycle, Jerry.read)
 
 
-
-
