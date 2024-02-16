@@ -28,7 +28,7 @@ class Encoder:
         @param ch2pin: Pin for reading encoder channel 2
         @param timer: Timer object for reading encoder
         """
-        print ("Creating an encoder reader")
+        #print ("Creating an encoder reader")
         self.timer = timer
         self.en1 = timer.channel(1, pyb.Timer.ENC_AB, pin=ch1pin) #sets up ch 1 for encoder counting mode on ch1pin
         self.en2 = timer.channel(2, pyb.Timer.ENC_AB, pin=ch2pin) #sets up ch 2 for encoder counting mode on ch2pin
@@ -52,8 +52,8 @@ class Encoder:
         elif self.delta < -self.AR/2: # check overflow (if delta is less then auto reload value)
             self.delta += self.AR # offset to correct overflow (if so, then will offset by add AR from delta)
         self.deltatot += self.delta# summing all delta from previous calculates (to determine position overtime)
-#         print("Delta = ", self.delta);# prints the delta
-#         print("Delta Total = ", self.deltatot);# prints total delta
+#        # print("Delta = ", self.delta);# prints the delta
+#        # print("Delta Total = ", self.deltatot);# prints total delta
         self.previous = self.current # stores previous time into current for next read
         #print(self.timer.counter())
         return self.timer.counter()
@@ -64,7 +64,7 @@ class Encoder:
         current position of the motor
         """
         self.timer.counter(0)
-        print ("Encoder count reset to zero")
+        #print ("Encoder count reset to zero")
 
 # This main code is run if this file is the main program but won't run if this
 # file is imported as a module by some other main program           
@@ -102,5 +102,3 @@ if __name__ == "__main__":
     #read encoder 20 times for 20 sec
     #time.sleep(0.5)
     #Tom.read()
-
-

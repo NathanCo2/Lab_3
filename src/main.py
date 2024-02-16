@@ -1,22 +1,9 @@
-"""!
-@file main.py
-Run real or simulated dynamic response tests and plot the results. This program
-demonstrates a way to make a simple GUI with a plot in it. It uses Tkinter, an
-old-fashioned and ugly but useful GUI library which is included in Python by
-default.
-
-This file is based loosely on an example found at
-https://matplotlib.org/stable/gallery/user_interfaces/embedding_in_tk_sgskip.html
-
-@author Jessica Perez, Jacquelyn Banh, and Nathan Chapman
-@date   2024-02-14 Original program, based on example from above listed source
-@copyright (c) 2024 by Jessica Perez, Jacquelyn Banh, and Nathan Chapman and released under the GNU Public Licenes V3
-"""
-import utime
+# from matplotlib import pyplot
 from motor_driver import MotorDriver
 from encoder_reader import Encoder
 from motor_controller_Nathan import MotorController
-# from matplotlib import pyplot
+import utime
+
 
 # set up timer 8 for encoder 2
 TIM8 = pyb.Timer(8, prescaler=1, period=0xFFFF) # Timer 8, no prescalar, frequency 100kHz
@@ -35,13 +22,33 @@ pina1 = pyb.Pin(pyb.Pin.board.PA1)
 # Create motor driver
 Tom = MotorDriver(pinc1, pina0, pina1, TIM5)
 
-# setup motor controller
-kP = 0.0195
-setpoint = 10000
-Deitch = MotorController(kP, setpoint, Tom.set_duty_cycle, Jerry.read)
-    
+
+# Reads the com port and waits for Kp value
+Jerry.zero()
+
 while True:
-    Deitch.run()
-    utime.sleep_ms(100)
+    usbvcp = pyb.USB_VCP()
+    print(f"waiting for input")
     
-Deitch.controller_response()
+    
+    while True:
+        KP_value = usbvcp.readline()
+        if(KP_value != None):
+            break
+
+    KP = float(KP_value)
+    print(f"input recieved")
+    print(KP)
+
+    # setup motor controller
+    setpoint = 30500
+    Deitch = MotorController(KP, setpoint, Tom.set_duty_cycle, Jerry.read)
+        
+    for i in range(100):
+        Deitch.run()
+        utime.sleep_ms(10)
+
+    Deitch.controller_response()
+
+
+

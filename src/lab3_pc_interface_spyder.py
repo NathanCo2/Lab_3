@@ -18,7 +18,7 @@ import math
 import time
 import tkinter 
 import serial
-from motor_controller_Nathan import MotorController
+
 from time import sleep
 from random import random
 from matplotlib import pyplot 
@@ -45,12 +45,10 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
     yaxis_motor_positions.clear() 
     
     # Awaiting User input
-    #user_entry = input("Enter a gain value: ")
-    # Puts the gain value into the Motor Controller 
-    #gain_value = MotorController(user_entry)
-    # Edit Motor controller to accept an input
-    # 
-    
+    while True:
+        user_entry = input("Enter a gain value: ")
+        
+
     # Importing data (time, voltage) from the mircontroller
     with serial.Serial(port='COM5',baudrate=9600,timeout=1) as ser:
         ser.write(b'\x03') 
@@ -72,9 +70,9 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
                 #stores the created list of variables in new arrays
                 xaxis_times.append(xx)
                 yaxis_motor_positions.append(yy)
-            #except ValueError:
-            #    print('Error: :(')
-            #    pass
+            except ValueError:
+                print("Error:" + line)
+                pass
         
         #Checking Array
         print(xaxis_times)

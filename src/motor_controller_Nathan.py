@@ -11,8 +11,9 @@ correctly.
 @copyright (c) 2024 by Jessica Perez, Jacquelyn Banh, and Nathan Chapman and released under the GNU Public Licenes V3
 """
 
-#import pyb
-import time
+import pyb
+import utime
+import cqueue
 
 class MotorController:
     """! 
@@ -34,6 +35,8 @@ class MotorController:
         self.err = 0
         self.setdutycycle = setdutycycle_f
         self.getactual = getactual_f
+        self.timequeue = cqueue.IntQueue(100) # queue for time
+        self.valqueue = cqueue.IntQueue(100) # queue for values
         
     def run(self):
         """!
@@ -43,8 +46,11 @@ class MotorController:
         self.err = self.setpoint - self.actual
         self.PWM = int(self.err*self.gain)
         self.setdutycycle(self.PWM)
-        return self.PWM # return actuation value
-    
+        self.timequeue.put(utime.ticks_ms()) # puts time in queue
+        self.valqueue.put(self.PWM) # puts PWM in queue
+        self.time = []
+        self.val = []
+        
     def set_setpoint(self,setpoint):
         """!
         This method sets up the setpoint for proportional control
@@ -64,7 +70,16 @@ class MotorController:
         This method will print the results obtained of the step
         response and print when the step response is done running
         """  
-
+        while self.timequeue.any():#Checks if anything is the Queue and emptying it
+            self.time.append(self.timequeue.get()) #Gets single value from queue
+            self.val.append(self.valqueue.get())
+        self.firstval = self.val[0]
+        self.val_offset = [abs(i - self.firstval) for i in self.val]
+        self.firsttime = self.time[0]
+        self.time_offset = [t - self.firsttime for t in self.time]
+        for i in range(len(self.time_offset)):
+            print(f"{self.time_offset[i]}, {self.val_offset[i]}")     
+        
 # This main code is run if this file is the main program but won't run if this
 # file is imported as a module by some other main program           
 if __name__ == "__main__":
@@ -74,23 +89,9 @@ if __name__ == "__main__":
     pinc6 = pyb.Pin(pyb.Pin.board.PC6)
     pinc7 = pyb.Pin(pyb.Pin.board.PC7)
     # Create encoder object
-    Jerry = Encoder(pinc6, pinc7, TIM8)
+    #Jerry = Encoder(pinc6, pinc7, TIM8)
 
     # setup motor
     TIM5 = pyb.Timer(5, freq=2000) # Timer 5, frequency 2000Hz
     # Define pin assignments for motor 2
-    pinc1 = pyb.Pin(pyb.Pin.board.PC1, pyb.Pin.OUT_PP)
-    pina0= pyb.Pin(pyb.Pin.board.PA0)
-    pina1 = pyb.Pin(pyb.Pin.board.PA1)    
-    # Create motor driver
-    Tom = MotorDriver(pinc1, pina0, pina1, TIM5)
-
-    # setup motor controller
-    kP = 1
-    setpoint = 1
-    Deitch = MotorController(kP, setpoint, Tom.set_duty_cycle, Jerry.read)
-        
-
-
-
-
+#    pinc1 = pyb.P
