@@ -44,16 +44,18 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
     xaxis_times.clear()
     yaxis_motor_positions.clear() 
     
+    
     # Importing data (time, voltage) from the mircontroller
     with serial.Serial(port='COM5',baudrate=9600,timeout=1) as ser:
         ser.write(b'\x03') 
         ser.write(b'\x04')
         
-        # Awaiting User input
-        user_entry = input("Enter a gain value: ")
-        ser.write(user_entry.encode('utf-8')) 
+    # Awaiting User input
+    user_entry = input("Enter a gain value: ")
+    ser.write(user_entry.encode('utf-8'))    
         
-        for line in ser:
+    #while ser.in_waiting == 0:
+    for line in ser:
             try:
                 line = line.decode('utf-8')
                 #splits the string into two CSV
@@ -72,16 +74,16 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
             except ValueError:
                 print("Error:" + line)
                 pass
-        
-        #Checking Array
-        print(xaxis_times)
-        print(yaxis_motor_positions)
-       
-        # plotting the experimental curves
-        plot_axes.plot(xaxis_times, yaxis_motor_positions)
-        plot_axes.set_xlabel(xlabel)
-        plot_axes.set_ylabel(ylabel)
-        plot_axes.grid(True)
+    
+    #Checking Array
+    print(xaxis_times)
+    print(yaxis_motor_positions)
+   
+    # plotting the experimental curves
+    plot_axes.plot(xaxis_times, yaxis_motor_positions)
+    plot_axes.set_xlabel(xlabel)
+    plot_axes.set_ylabel(ylabel)
+    plot_axes.grid(True)
                  
     ser.close()
 
