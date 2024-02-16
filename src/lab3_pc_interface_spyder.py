@@ -44,15 +44,14 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
     xaxis_times.clear()
     yaxis_motor_positions.clear() 
     
-    # Awaiting User input
-    while True:
-        user_entry = input("Enter a gain value: ")
-        
-
     # Importing data (time, voltage) from the mircontroller
     with serial.Serial(port='COM5',baudrate=9600,timeout=1) as ser:
         ser.write(b'\x03') 
         ser.write(b'\x04')
+        
+        # Awaiting User input
+        user_entry = input("Enter a gain value: ")
+        ser.write(user_entry.encode('utf-8')) 
         
         for line in ser:
             try:
