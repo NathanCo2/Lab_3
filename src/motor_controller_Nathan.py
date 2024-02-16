@@ -35,8 +35,8 @@ class MotorController:
         self.err = 0
         self.setdutycycle = setdutycycle_f
         self.getactual = getactual_f
-        self.timequeue = cqueue.IntQueue(100) # queue for time
-        self.valqueue = cqueue.IntQueue(100) # queue for values
+        self.timequeue = cqueue.IntQueue(200) # queue for time
+        self.valqueue = cqueue.FloatQueue(200) # queue for values
         
     def run(self):
         """!
@@ -44,7 +44,7 @@ class MotorController:
         """
         self.actual = self.getactual()
         self.err = self.setpoint - self.actual
-        self.PWM = int(self.err*self.gain)
+        self.PWM = self.err*self.gain
         self.setdutycycle(self.PWM)
         self.timequeue.put(utime.ticks_ms()) # puts time in queue
         self.valqueue.put(self.PWM) # puts PWM in queue
@@ -78,8 +78,8 @@ class MotorController:
         self.firsttime = self.time[0]
         self.time_offset = [t - self.firsttime for t in self.time]
         for i in range(len(self.time_offset)):
-            print(f"{self.time_offset[i]}, {self.val_offset[i]}")     
-        
+            print(f"{self.time_offset[i]}, {self.val_offset[i]}")
+
 # This main code is run if this file is the main program but won't run if this
 # file is imported as a module by some other main program           
 if __name__ == "__main__":

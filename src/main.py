@@ -24,31 +24,31 @@ Tom = MotorDriver(pinc1, pina0, pina1, TIM5)
 
 
 # Reads the com port and waits for Kp value
-Jerry.zero()
 
 while True:
-    usbvcp = pyb.USB_VCP()
-    print(f"waiting for input")
-    
-    
-    while True:
-        KP_value = usbvcp.readline()
-        if(KP_value != None):
-            break
-
-    KP = float(KP_value)
-    print(f"input recieved")
-    print(KP)
+#     usbvcp = pyb.USB_VCP()
+    print('Input:')
+#     while True:
+#         # Read data with a timeout of 100 milliseconds
+#         KP_bytes = usbvcp.readline(100)
+#         if KP_bytes:
+#             break
+    KP_bytes = input()
+    KP = float(KP_bytes)
+    #KP = float(KP_bytes.decode('utf-8'))
+    #print(f"input recieved")
+    #print(KP)
 
     # setup motor controller
+    Jerry.zero()
     setpoint = 30500
     Deitch = MotorController(KP, setpoint, Tom.set_duty_cycle, Jerry.read)
         
-    for i in range(100):
+    for i in range(200):
         Deitch.run()
         utime.sleep_ms(10)
 
     Deitch.controller_response()
-
-
+    Tom.set_duty_cycle(0)
+    
 

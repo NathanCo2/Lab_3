@@ -14,21 +14,19 @@ https://matplotlib.org/stable/gallery/user_interfaces/embedding_in_tk_sgskip.htm
 @copyright (c) 2024 by Jessica Perez, Jacquelyn Banh, and Nathan Chapman and released under the GNU Public Licenes V3
 """
 
-import math
-import time
+# import math
+# import time
 import tkinter 
 import serial
 
-from time import sleep
-from random import random
-from matplotlib import pyplot 
+#from time import sleep
+# from random import random
+# from matplotlib import pyplot 
 #from serial import Serial
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
                                                NavigationToolbar2Tk)
-#Creates an empty array
-xaxis_times = []
-yaxis_motor_positions = []
+
 
 def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
     """!
@@ -43,49 +41,69 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
     #Clearing the array
     xaxis_times.clear()
     yaxis_motor_positions.clear() 
-    
+    input = False
     
     # Importing data (time, voltage) from the mircontroller
-    with serial.Serial(port='COM5',baudrate=9600,timeout=1) as ser:
-        ser.write(b'\x03') 
+    with serial.Serial(port='COM6',baudrate=115200, timeout=1) as ser:
+        ser.write(b'\x03')
         ser.write(b'\x04')
+        while input == False:
+            line = ser.readline().decode('utf-8').strip()
+            print(line)
+            if line == 'Input':
+                input = True
+            
+        # Awaiting User input
+        user_entry = input("Enter a gain value: ")
+        ser.write(user_entry.encode('utf-8'))    
+        ser.write(b'\n') # new line cmd, hits enter key for Kp
         
-    # Awaiting User input
-    user_entry = input("Enter a gain value: ")
-    ser.write(user_entry.encode('utf-8'))    
+        # while ser.in_waiting < 80: #sleep through initialization
+        #     pass
         
-    #while ser.in_waiting == 0:
-    for line in ser:
-            try:
-                line = line.decode('utf-8')
-                #splits the string into two CSV
-                split = line.split(',')
-                #creates a list of the x-values (Time [s])
-                x = split[0:1]
-                join_x = ','.join(x)
-                xx = float(join_x)
-                #creates a list of the y-values (Voltage [V])
-                y = split[1:2]
-                join_y = ','.join(y)
-                yy = float(join_y)
-                #stores the created list of variables in new arrays
-                xaxis_times.append(xx)
-                yaxis_motor_positions.append(yy)
-            except ValueError:
-                print("Error:" + line)
-                pass
-    
-    #Checking Array
-    print(xaxis_times)
-    print(yaxis_motor_positions)
-   
-    # plotting the experimental curves
-    plot_axes.plot(xaxis_times, yaxis_motor_positions)
-    plot_axes.set_xlabel(xlabel)
-    plot_axes.set_ylabel(ylabel)
-    plot_axes.grid(True)
-                 
-    ser.close()
+        while ser.in_waiting > 0: #wait for output from microcontroller
+           data = ser.readline().decode('utf-8').strip()
+           try:
+               # Split the received data into time and voltage
+               time, voltage = data.split(',') # splits the string into two CSV
+               xaxis_times.append(float(time))
+               yaxis_motor_positions.append(float(voltage))
+           except ValueError:
+               print("Error parsing data:", data)
+               continue
+            
+           
+            # for line in ser:
+            #         try:
+            #             line = line.decode('utf-8')
+            #             #splits the string into two CSV
+            #             split = line.split(',')
+            #             #creates a list of the x-values (Time [s])
+            #             x = split[0:1]
+            #             join_x = ','.join(x)
+            #             xx = float(join_x)
+            #             #creates a list of the y-values (Voltage [V])
+            #             y = split[1:2]
+            #             join_y = ','.join(y)
+            #             yy = float(join_y)
+            #             #stores the created list of variables in new arrays
+            #             xaxis_times.append(xx)
+            #             yaxis_motor_positions.append(yy)
+            #         except ValueError:
+            #             print("Error:" + line)
+            #             pass
+        
+        #Checking Array
+        print(xaxis_times)
+        print(yaxis_motor_positions)
+       
+        # plotting the experimental curves
+        plot_axes.plot(xaxis_times, yaxis_motor_positions)
+        plot_axes.set_xlabel(xlabel)
+        plot_axes.set_ylabel(ylabel)
+        plot_axes.grid(True)
+                     
+        ser.close()
 
 def tk_matplot(plot_function, xlabel, ylabel, title):
     """!
@@ -138,6 +156,10 @@ def tk_matplot(plot_function, xlabel, ylabel, title):
 # This main code is run if this file is the main program but won't run if this
 # file is imported as a module by some other main program
 if __name__ == "__main__":
+    #Creates an empty array
+    xaxis_times = []
+    yaxis_motor_positions = []
+    
     tk_matplot(plot_example,
                xlabel="Time (ms)",
                ylabel="Voltage (V)",

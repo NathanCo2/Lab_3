@@ -101,4 +101,4 @@ if __name__ == "__main__":
     #moe.set_duty_cycle (50)
     #read encoder 20 times for 20 sec
     #time.sleep(0.5)
-    #Tom.read()
+    #Tom.read()
