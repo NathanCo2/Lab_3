@@ -36,7 +36,7 @@ class MotorController:
         self.setdutycycle = setdutycycle_f
         self.getactual = getactual_f
         self.timequeue = cqueue.IntQueue(200) # queue for time
-        self.valqueue = cqueue.FloatQueue(200) # queue for values
+        self.valqueue = cqueue.IntQueue(200) # queue for values
         
     def run(self):
         """!
@@ -44,10 +44,12 @@ class MotorController:
         """
         self.actual = self.getactual()
         self.err = self.setpoint - self.actual
+        #print(self.gain)
         self.PWM = self.err*self.gain
+        #print(self.PWM)
         self.setdutycycle(self.PWM)
         self.timequeue.put(utime.ticks_ms()) # puts time in queue
-        self.valqueue.put(self.PWM) # puts PWM in queue
+        self.valqueue.put(self.actual) # puts PWM in queue
         self.time = []
         self.val = []
         
@@ -93,5 +95,4 @@ if __name__ == "__main__":
 
     # setup motor
     TIM5 = pyb.Timer(5, freq=2000) # Timer 5, frequency 2000Hz
-    # Define pin assignments for motor 2
-#    pinc1 = pyb.P
+    # D

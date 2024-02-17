@@ -41,57 +41,49 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
     #Clearing the array
     xaxis_times.clear()
     yaxis_motor_positions.clear() 
-    input = False
+    go = False
     
     # Importing data (time, voltage) from the mircontroller
     with serial.Serial(port='COM6',baudrate=115200, timeout=1) as ser:
         ser.write(b'\x03')
         ser.write(b'\x04')
-        while input == False:
+        #ser.write(b'import main\n')
+        while not go:
             line = ser.readline().decode('utf-8').strip()
             print(line)
-            if line == 'Input':
-                input = True
-            
+            if line == 'Receiving':
+                go = True
+
+        # Read and discard any data in the input buffer
+        while ser.in_waiting > 0:
+            print(ser.readline().decode('utf-8'))
+        print("Serial input buffer cleared.")    
+       
         # Awaiting User input
         user_entry = input("Enter a gain value: ")
-        ser.write(user_entry.encode('utf-8'))    
-        ser.write(b'\n') # new line cmd, hits enter key for Kp
+        # send user input to microcontroller
+        ser.write(user_entry.encode('utf-8'))
         
-        # while ser.in_waiting < 80: #sleep through initialization
-        #     pass
+        # Read and discard any data in the input buffer
+        while ser.in_waiting > 0:
+            print(ser.readline().decode('utf-8'))
+        print("Serial input buffer cleared.")    
         
-        while ser.in_waiting > 0: #wait for output from microcontroller
-           data = ser.readline().decode('utf-8').strip()
-           try:
-               # Split the received data into time and voltage
-               time, voltage = data.split(',') # splits the string into two CSV
-               xaxis_times.append(float(time))
-               yaxis_motor_positions.append(float(voltage))
-           except ValueError:
-               print("Error parsing data:", data)
-               continue
-            
-           
-            # for line in ser:
-            #         try:
-            #             line = line.decode('utf-8')
-            #             #splits the string into two CSV
-            #             split = line.split(',')
-            #             #creates a list of the x-values (Time [s])
-            #             x = split[0:1]
-            #             join_x = ','.join(x)
-            #             xx = float(join_x)
-            #             #creates a list of the y-values (Voltage [V])
-            #             y = split[1:2]
-            #             join_y = ','.join(y)
-            #             yy = float(join_y)
-            #             #stores the created list of variables in new arrays
-            #             xaxis_times.append(xx)
-            #             yaxis_motor_positions.append(yy)
-            #         except ValueError:
-            #             print("Error:" + line)
-            #             pass
+        while ser.in_waiting == 0:
+            continue
+        
+        #read output from microcontroller
+        for line in ser:
+            data = ser.readline().decode('utf-8').strip()
+            print(data)
+            try:
+                # Split the received data into time and voltage
+                time, voltage = data.split(',') # splits the string into two CSV
+                xaxis_times.append(float(time))
+                yaxis_motor_positions.append(float(voltage))
+            except ValueError:
+                print("Error parsing data:", data)
+                continue
         
         #Checking Array
         print(xaxis_times)
