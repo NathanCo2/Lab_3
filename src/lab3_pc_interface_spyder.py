@@ -44,7 +44,7 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
     go = False
     
     # Importing data (time, voltage) from the mircontroller
-    with serial.Serial(port='COM6',baudrate=115200, timeout=1) as ser:
+    with serial.Serial(port='COM5',baudrate=115200, timeout=1) as ser:
         ser.write(b'\x03')
         ser.write(b'\x04')
         #ser.write(b'import main\n')
@@ -75,19 +75,21 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
         #read output from microcontroller
         for line in ser:
             data = ser.readline().decode('utf-8').strip()
-            print(data)
+            print(type(data))
             try:
                 # Split the received data into time and voltage
-                time, voltage = data.split(',') # splits the string into two CSV
-                xaxis_times.append(float(time))
-                yaxis_motor_positions.append(float(voltage))
+                 time, voltage = data.split(',') # splits the string into two CSV
+                 random = [eval(i) for i in time]
+                 new = [eval(i) for i in voltage]
+                # xaxis_times.append(float(time))
+                # yaxis_motor_positions.append(float(voltage))
             except ValueError:
                 print("Error parsing data:", data)
                 continue
         
         #Checking Array
-        print(xaxis_times)
-        print(yaxis_motor_positions)
+        print(type(random))
+        print(type(new))
        
         # plotting the experimental curves
         plot_axes.plot(xaxis_times, yaxis_motor_positions)
