@@ -76,11 +76,15 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
         for line in ser:
             data = ser.readline().decode('utf-8').strip()
             print(type(data))
+            new_time = []
+            new_voltage = []
             try:
                 # Split the received data into time and voltage
-                 time, voltage = data.split(',') # splits the string into two CSV
-                 random = [eval(i) for i in time]
-                 new = [eval(i) for i in voltage]
+                time, voltage = data.split(',') # splits the string into two CSV
+                for i in range(0, len(time)):
+                    new_time[i] = int(time[i])
+                for i in range(0, len(voltage)):
+                   new_voltage[i] = int(voltage[i])
                 # xaxis_times.append(float(time))
                 # yaxis_motor_positions.append(float(voltage))
             except ValueError:
@@ -88,8 +92,8 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
                 continue
         
         #Checking Array
-        print(type(random))
-        print(type(new))
+        print(type(new_voltage))
+        print(type(new_time))
        
         # plotting the experimental curves
         plot_axes.plot(xaxis_times, yaxis_motor_positions)
