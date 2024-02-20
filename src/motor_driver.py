@@ -79,10 +79,10 @@ if __name__ == "__main__":
     IN2B = pyb.Pin(pyb.Pin.board.PA1)
 
     # Create motor drivers
-    moe = MotorDriver(ENA, IN1A, IN2A, TIM3)
-    eenie = MotorDriver(ENB, IN1B, IN2B, TIM5)
+    eenie = MotorDriver(ENA, IN1A, IN2A, TIM3)
+    moe = MotorDriver(ENB, IN1B, IN2B, TIM5)
     while True:
-        moe.set_duty_cycle (50.52345)				#Forward at 50% duty cycle
+        moe.set_duty_cycle (50)				#Forward at 50% duty cycle
         eenie.set_duty_cycle (-50)	
         time.sleep(2)						#Sleeps for 2 seconds
         moe.set_duty_cycle (-50)			#Reverse at 50% duty cycle

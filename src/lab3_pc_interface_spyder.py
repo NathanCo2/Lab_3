@@ -44,7 +44,7 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
     go = False
     
     # Importing data (time, voltage) from the mircontroller
-    with serial.Serial(port='COM5', baudrate=115200, timeout=1) as ser:
+    with serial.Serial(port='COM6', baudrate=115200, timeout=1) as ser:
         ser.write(b'\x03')
         ser.write(b'\x04')
         #ser.write(b'import main\n')
@@ -76,8 +76,8 @@ def plot_example(plot_axes, plot_canvas, xlabel, ylabel):
         for line in ser:
             data = ser.readline().decode('utf-8').strip()
             #print(type(data))
-            new_time = []
-            new_voltage = []
+            #new_time = []
+            #new_voltage = []
             try:
                 # Split the received data into time and voltage
                 time, voltage = map(float, data.split(','))

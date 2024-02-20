@@ -46,7 +46,7 @@ class Encoder:
         #Accounts from overflow and underflow
         self.current = self.timer.counter()# stores current time value
         self.delta = self.current - self.previous # calculates the delta based on current time and previous time
-        
+        #print(f"delta {self.delta}")
         #print("Delta = ", self.delta);# print the delta
         if self.delta > self.AR/2: # check underflow (if delta is greater then auto reload value)
             self.delta -= self.AR # offset to correct underflow (if so, then will offset by subtracting AR from delta)
@@ -58,7 +58,7 @@ class Encoder:
         self.previous = self.current # stores previous time into current for next read
         #print(self.timer.counter())
         #return self.timer.counter()
-        return abs(self.deltatot)
+        return self.deltatot
     
     def zero(self):
         """!
