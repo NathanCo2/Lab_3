@@ -57,8 +57,8 @@ class Encoder:
         #print("Delta Total = ", self.deltatot);# prints total delta
         self.previous = self.current # stores previous time into current for next read
         #print(self.timer.counter())
-        #return self.timer.counter()
-        return self.deltatot()
+        return self.timer.counter()
+        #return self.deltatot()
     
     def zero(self):
         """!

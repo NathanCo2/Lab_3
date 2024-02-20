@@ -27,7 +27,7 @@ Tom = MotorDriver(pinc1, pina0, pina1, TIM5)
 
 while True:
     usbvcp = pyb.USB_VCP()
-    print('Receiving')
+#    print('Receiving')
 #     while True:
 #         # Read data with a timeout of 100 milliseconds
 #         KP_bytes = usbvcp.readline(100)
