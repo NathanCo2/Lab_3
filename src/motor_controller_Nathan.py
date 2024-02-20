@@ -44,6 +44,7 @@ class MotorController:
         This method will run one pass of the control algorithm
         """
         self.actual = self.getactual()
+        #print(self.actual)
         self.err = self.setpoint - self.actual
         #print(self.gain)
         self.PWM = self.err*self.gain

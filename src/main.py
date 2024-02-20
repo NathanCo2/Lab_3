@@ -27,7 +27,7 @@ Tom = MotorDriver(pinc1, pina0, pina1, TIM5)
 
 while True:
     usbvcp = pyb.USB_VCP()
-#    print('Receiving')
+    print('Receiving')
 #     while True:
 #         # Read data with a timeout of 100 milliseconds
 #         KP_bytes = usbvcp.readline(100)
@@ -46,7 +46,7 @@ while True:
 
     # setup motor controller
     Jerry.zero()
-    setpoint = 30722
+    setpoint = 5000
     Deitch = MotorController(KP, setpoint, Tom.set_duty_cycle, Jerry.read)
         
     for i in range(200):
