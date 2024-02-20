@@ -14,6 +14,7 @@ correctly.
 import pyb
 import utime
 import cqueue
+from encoder_reader import Encoder
 
 class MotorController:
     """! 
@@ -35,8 +36,8 @@ class MotorController:
         self.err = 0
         self.setdutycycle = setdutycycle_f
         self.getactual = getactual_f
-        self.timequeue = cqueue.IntQueue(200) # queue for time
-        self.valqueue = cqueue.IntQueue(200) # queue for values
+        self.timequeue = cqueue.FloatQueue(200) # queue for time
+        self.valqueue = cqueue.FloatQueue(200) # queue for values
         
     def run(self):
         """!
@@ -50,8 +51,7 @@ class MotorController:
         self.setdutycycle(self.PWM)
         self.timequeue.put(utime.ticks_ms()) # puts time in queue
         self.valqueue.put(self.actual) # puts PWM in queue
-        self.time = []
-        self.val = []
+        
         
     def set_setpoint(self,setpoint):
         """!
@@ -72,6 +72,8 @@ class MotorController:
         This method will print the results obtained of the step
         response and print when the step response is done running
         """  
+        self.time = []
+        self.val = []
         while self.timequeue.any():#Checks if anything is the Queue and emptying it
             self.time.append(self.timequeue.get()) #Gets single value from queue
             self.val.append(self.valqueue.get())
@@ -91,8 +93,8 @@ if __name__ == "__main__":
     pinc6 = pyb.Pin(pyb.Pin.board.PC6)
     pinc7 = pyb.Pin(pyb.Pin.board.PC7)
     # Create encoder object
-    #Jerry = Encoder(pinc6, pinc7, TIM8)
+    Jerry = Encoder(pinc6, pinc7, TIM8)
 
     # setup motor
     TIM5 = pyb.Timer(5, freq=2000) # Timer 5, frequency 2000Hz
-    # D
+    

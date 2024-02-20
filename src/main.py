@@ -51,7 +51,7 @@ while True:
         
     for i in range(200):
         Deitch.run()
-        utime.sleep_ms(10)
+        utime.sleep_ms(5)
 
     Deitch.controller_response()
     Tom.set_duty_cycle(0)
