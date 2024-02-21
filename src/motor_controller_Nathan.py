@@ -3,8 +3,8 @@
 
 This program demonstrates the development of a class called MotorController to that
 perform closed-loop proportional control. This code was tested an ranwith the Motor
-Driver class and Encoder class developed in Lab 1 to examine if the code was running
-correctly. 
+Driver class and Encoder class developed in the previous labs to examine if the code
+was running correctly. 
 
 @author Jessica Perez, Jacquelyn Banh, and Nathan Chapman
 @date   2024-02-13 Original program, based on example from above listed source

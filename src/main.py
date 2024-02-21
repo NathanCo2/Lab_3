@@ -1,3 +1,15 @@
+"""!
+@file main.py
+
+This program demonstrates our teams ability to utilize the three developed classes in lab to run a controller,
+closed-loop step response test in which the set point is chanfed as to rotate the motor by about one revolution
+and stop it at the final position. The code waits for the user to input a Kp value then runs the step response test
+each time a value is entered. 
+
+@author Jessica Perez, Jacquelyn Banh, and Nathan Chapman
+@date   2024-02-13 Original program, based on example from above listed source
+@copyright (c) 2024 by Jessica Perez, Jacquelyn Banh, and Nathan Chapman and released under the GNU Public Licenes V3
+"""
 # from matplotlib import pyplot
 from motor_driver import MotorDriver
 from encoder_reader import Encoder

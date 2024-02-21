@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 """!
 @file lab3_pc_interface.py
+
 Run real or simulated dynamic response tests and plot the results. This program
 demonstrates a way to make a simple GUI with a plot in it. It uses Tkinter, an
 old-fashioned and ugly but useful GUI library which is included in Python by
