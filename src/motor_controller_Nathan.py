@@ -43,12 +43,12 @@ class MotorController:
         """!
         This method will run one pass of the control algorithm
         """
-        self.actual = self.getactual()
-        #print(self.actual)
-        self.err = self.setpoint - self.actual
-        #print(self.gain)
+        self.actual = self.getactual() # call read encoder function and get delta total
+        #print(f'actual encoder position {self.actual}')
+        self.err = self.actual - self.setpoint
+        #print(f'err {self.err}')
         self.PWM = self.err*self.gain
-        #print(self.PWM)
+        #print(f'PWM {self.PWM}')
         self.setdutycycle(self.PWM)
         self.timequeue.put(utime.ticks_ms()) # puts time in queue
         self.valqueue.put(self.actual) # puts PWM in queue
@@ -78,12 +78,10 @@ class MotorController:
         while self.timequeue.any():#Checks if anything is the Queue and emptying it
             self.time.append(self.timequeue.get()) #Gets single value from queue
             self.val.append(self.valqueue.get())
-        self.firstval = self.val[0]
-        self.val_offset = [abs(i - self.firstval) for i in self.val]
         self.firsttime = self.time[0]
         self.time_offset = [t - self.firsttime for t in self.time]
         for i in range(len(self.time_offset)):
-            print(f"{self.time_offset[i]}, {self.val_offset[i]}")
+            print(f"{self.time_offset[i]}, {self.val[i]}")
 
 # This main code is run if this file is the main program but won't run if this
 # file is imported as a module by some other main program           
