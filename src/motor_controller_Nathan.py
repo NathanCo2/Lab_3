@@ -21,23 +21,27 @@ class MotorController:
     This class implements the Motor Controller for an ME405 kit. 
     """
 
-    def __init__ (self, gain, setpoint, setdutycycle_f, getactual_f):
+    def __init__ (self, Pgain, Igain, setpoint, setdutycycle_f, getactual_f):
         """! 
         Creates an encoder object that can be used to measure
         the position of a motor
-        @param gain = Kp, percent duty cycle/encoder count
+        @param Pgain = Kp, percent duty cycle/encoder count
+        @param Igain = Ki
         @param setpoint = desired angle of motor
         @param setdutycycle_f = function to set duty cycle output
         @param getactual_f = function to read actual value
         """
         self.setpoint = setpoint
-        self.gain = gain
+        self.Pgain = Pgain
+        self.Igain = Igain
         self.actual = 0
         self.err = 0
         self.setdutycycle = setdutycycle_f
         self.getactual = getactual_f
         self.timequeue = cqueue.FloatQueue(200) # queue for time
         self.valqueue = cqueue.FloatQueue(200) # queue for values
+        self.esum = 0 #error sum to be used for I control
+        self.oldt = 0 # delta t to be used for I control
         
     def run(self):
         """!
@@ -47,11 +51,13 @@ class MotorController:
         #print(f'actual encoder position {self.actual}')
         self.err = self.actual - self.setpoint
         #print(f'err {self.err}')
-        self.PWM = self.err*self.gain
+        self.PWM = self.err*self.Pgain + self.esum+(utime.ticks_ms()-self.oldt)*self.Igain
         #print(f'PWM {self.PWM}')
+        self.oldt = utime.ticks_ms()
         self.setdutycycle(self.PWM)
         self.timequeue.put(utime.ticks_ms()) # puts time in queue
         self.valqueue.put(self.actual) # puts PWM in queue
+        self.esum += self.err
         
         
     def set_setpoint(self,setpoint):

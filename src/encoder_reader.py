@@ -94,12 +94,12 @@ if __name__ == "__main__":    # set up timer 4 for encoder 1
     # Create motor drivers
     moe = MotorDriver(pina10, pinb4, pinb5, TIM3)
     while True:
-        moe.set_duty_cycle (-50)#Reverse at 50% duty cycle
+        moe.set_duty_cycle(-50)#Reverse at 50% duty cycle
         #read encoder 20times for 20 seconds
         time.sleep(0.01)
         Jerry.read()
-    #change to different duty cycle
-        #moe.set_duty_cycle (50)
-        #read encoder 20 times for 20 sec
-        #time.sleep(0.01)
-        #Tom.read()
+    # change to different duty cycle
+        moe.set_duty_cycle(50)
+    # read encoder 20 times for 20 sec
+        time.sleep(0.01)
+        Tom.read()
